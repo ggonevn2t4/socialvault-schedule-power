@@ -14,6 +14,7 @@ import TeamDashboard from "./pages/TeamDashboard";
 import ConnectedAccounts from "./pages/ConnectedAccounts";
 import Integrations from "./pages/Integrations";
 import Profile from "./pages/Profile";
+import BrandGuidelines from "./pages/BrandGuidelines";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import "./App.css";
@@ -68,6 +69,11 @@ const App = () => (
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              } />
+              <Route path="/brand-guidelines" element={
+                <ProtectedRoute>
+                  <BrandGuidelines />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

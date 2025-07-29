@@ -73,6 +73,7 @@ const navigationSections = [
   {
     label: "CÀI ĐẶT",
     items: [
+      { title: "Thương hiệu", url: "/brand-guidelines", icon: Palette, badge: null },
       { title: "Tài khoản liên kết", url: "/connected-accounts", icon: Link, badge: null },
       { title: "Thanh toán", url: "/billing", icon: CreditCard, badge: null },
       { title: "Hồ sơ", url: "/profile", icon: User, badge: null },

@@ -49,6 +49,162 @@ export type Database = {
           },
         ]
       }
+      automation_settings: {
+        Row: {
+          auto_cross_post: boolean | null
+          auto_hashtag_enabled: boolean | null
+          auto_post_enabled: boolean | null
+          content_approval_required: boolean | null
+          created_at: string
+          created_by: string
+          id: string
+          notification_settings: Json | null
+          platform_settings: Json | null
+          posting_schedule: Json | null
+          team_id: string
+          updated_at: string
+          webhook_urls: Json | null
+        }
+        Insert: {
+          auto_cross_post?: boolean | null
+          auto_hashtag_enabled?: boolean | null
+          auto_post_enabled?: boolean | null
+          content_approval_required?: boolean | null
+          created_at?: string
+          created_by: string
+          id?: string
+          notification_settings?: Json | null
+          platform_settings?: Json | null
+          posting_schedule?: Json | null
+          team_id: string
+          updated_at?: string
+          webhook_urls?: Json | null
+        }
+        Update: {
+          auto_cross_post?: boolean | null
+          auto_hashtag_enabled?: boolean | null
+          auto_post_enabled?: boolean | null
+          content_approval_required?: boolean | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          notification_settings?: Json | null
+          platform_settings?: Json | null
+          posting_schedule?: Json | null
+          team_id?: string
+          updated_at?: string
+          webhook_urls?: Json | null
+        }
+        Relationships: []
+      }
+      brand_guidelines: {
+        Row: {
+          accent_color: string | null
+          approved_phrases: Json | null
+          brand_name: string
+          brand_voice: string | null
+          content_style: Json | null
+          created_at: string
+          created_by: string
+          forbidden_words: Json | null
+          hashtag_sets: Json | null
+          id: string
+          logo_url: string | null
+          primary_color: string | null
+          primary_font: string | null
+          secondary_color: string | null
+          secondary_font: string | null
+          team_id: string
+          tone_of_voice: string | null
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string | null
+          approved_phrases?: Json | null
+          brand_name: string
+          brand_voice?: string | null
+          content_style?: Json | null
+          created_at?: string
+          created_by: string
+          forbidden_words?: Json | null
+          hashtag_sets?: Json | null
+          id?: string
+          logo_url?: string | null
+          primary_color?: string | null
+          primary_font?: string | null
+          secondary_color?: string | null
+          secondary_font?: string | null
+          team_id: string
+          tone_of_voice?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string | null
+          approved_phrases?: Json | null
+          brand_name?: string
+          brand_voice?: string | null
+          content_style?: Json | null
+          created_at?: string
+          created_by?: string
+          forbidden_words?: Json | null
+          hashtag_sets?: Json | null
+          id?: string
+          logo_url?: string | null
+          primary_color?: string | null
+          primary_font?: string | null
+          secondary_color?: string | null
+          secondary_font?: string | null
+          team_id?: string
+          tone_of_voice?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      content_templates: {
+        Row: {
+          content_template: string
+          created_at: string
+          created_by: string
+          hashtags: Json | null
+          id: string
+          is_public: boolean | null
+          name: string
+          platforms: Json | null
+          team_id: string
+          template_type: string
+          updated_at: string
+          usage_count: number | null
+        }
+        Insert: {
+          content_template: string
+          created_at?: string
+          created_by: string
+          hashtags?: Json | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          platforms?: Json | null
+          team_id: string
+          template_type: string
+          updated_at?: string
+          usage_count?: number | null
+        }
+        Update: {
+          content_template?: string
+          created_at?: string
+          created_by?: string
+          hashtags?: Json | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          platforms?: Json | null
+          team_id?: string
+          template_type?: string
+          updated_at?: string
+          usage_count?: number | null
+        }
+        Relationships: []
+      }
       permissions: {
         Row: {
           category: string
