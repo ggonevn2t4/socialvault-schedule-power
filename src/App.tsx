@@ -18,6 +18,7 @@ import Create from "./pages/Create";
 import BrandGuidelines from "./pages/BrandGuidelines";
 import CompetitiveIntelligence from "./pages/CompetitiveIntelligence";
 import Calendar from "./pages/Calendar";
+import Posts from "./pages/Posts";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import "./App.css";
@@ -92,6 +93,11 @@ const App = () => (
               <Route path="/calendar" element={
                 <ProtectedRoute>
                   <Calendar />
+                </ProtectedRoute>
+              } />
+              <Route path="/posts" element={
+                <ProtectedRoute>
+                  <Posts />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
