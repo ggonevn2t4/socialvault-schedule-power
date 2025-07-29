@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import Create from "./pages/Create";
 import BrandGuidelines from "./pages/BrandGuidelines";
 import CompetitiveIntelligence from "./pages/CompetitiveIntelligence";
+import Calendar from "./pages/Calendar";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import "./App.css";
@@ -86,6 +87,11 @@ const App = () => (
               <Route path="/competitive-intelligence" element={
                 <ProtectedRoute>
                   <CompetitiveIntelligence />
+                </ProtectedRoute>
+              } />
+              <Route path="/calendar" element={
+                <ProtectedRoute>
+                  <Calendar />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
