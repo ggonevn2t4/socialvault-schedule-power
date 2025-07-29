@@ -203,6 +203,15 @@
   .space-32 { @apply space-y-8; }
   .space-48 { @apply space-y-12; }
   .space-64 { @apply space-y-16; }
+  
+  /* Mobile safe area utilities */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
 }
 
 @keyframes fadeIn {
