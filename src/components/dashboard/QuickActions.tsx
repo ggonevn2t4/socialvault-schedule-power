@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { PenTool, Calendar, BarChart3, Users, Zap, Target } from "lucide-react";
 
 const actions = [
@@ -51,7 +52,7 @@ export function QuickActions() {
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {actions.map((action, index) => {
             const Icon = action.icon;
-            return (
+            const ActionButton = (
               <Button
                 key={index}
                 variant="ghost"
@@ -66,6 +67,16 @@ export function QuickActions() {
                 </div>
               </Button>
             );
+
+            if (action.title === "Tạo bài viết") {
+              return (
+                <CreatePostDialog key={index}>
+                  {ActionButton}
+                </CreatePostDialog>
+              );
+            }
+
+            return ActionButton;
           })}
         </div>
       </CardContent>

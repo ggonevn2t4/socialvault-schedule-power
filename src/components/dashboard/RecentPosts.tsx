@@ -2,46 +2,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MoreHorizontal, Facebook, Instagram, Twitter, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { MoreHorizontal, FileText, Clock, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { usePosts, useDeletePost } from "@/hooks/usePosts";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const posts = [
-  {
-    id: 1,
-    content: "Khám phá xu hướng marketing mới nhất trong năm 2024! 🚀 #Marketing #Trend",
-    platform: "facebook",
-    status: "published",
-    scheduledTime: "2024-01-15 14:30",
-    engagement: "156 lượt thích, 23 bình luận",
-  },
-  {
-    id: 2,
-    content: "Behind the scenes tại studio chụp ảnh sản phẩm mới 📸 #BehindTheScenes",
-    platform: "instagram",
-    status: "scheduled",
-    scheduledTime: "2024-01-16 09:00",
-    engagement: "Lên lịch",
-  },
-  {
-    id: 3,
-    content: "Tips hay ho để tăng engagement trên social media mà bạn nên biết!",
-    platform: "twitter",
-    status: "draft",
-    scheduledTime: "Bản nháp",
-    engagement: "Chưa xuất bản",
-  },
-];
-
-const platformIcons = {
-  facebook: Facebook,
-  instagram: Instagram,
-  twitter: Twitter,
-};
 
 const statusConfig = {
   published: { label: "Đã đăng", color: "bg-success", icon: CheckCircle },
@@ -50,6 +20,40 @@ const statusConfig = {
 };
 
 export function RecentPosts() {
+  const { data: posts, isLoading, error } = usePosts();
+  const deletePost = useDeletePost();
+
+  const handleDeletePost = async (postId: string) => {
+    await deletePost.mutateAsync(postId);
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="card-premium">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold">Bài viết gần đây</CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <span className="ml-2 text-muted-foreground">Đang tải...</span>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="card-premium">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold">Bài viết gần đây</CardTitle>
+        </CardHeader>
+        <CardContent className="text-center py-8">
+          <p className="text-muted-foreground">Có lỗi xảy ra khi tải bài viết.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="card-premium">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -59,35 +63,40 @@ export function RecentPosts() {
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
-        {posts.map((post) => {
-          const PlatformIcon = platformIcons[post.platform as keyof typeof platformIcons];
-          const StatusIcon = statusConfig[post.status as keyof typeof statusConfig].icon;
-          
-          return (
+        {posts && posts.length > 0 ? (
+          posts.slice(0, 5).map((post) => (
             <div key={post.id} className="flex items-start space-x-4 p-4 rounded-lg bg-accent/20 hover:bg-accent/30 transition-colors">
               <Avatar className="h-10 w-10">
                 <AvatarFallback className="bg-primary/10">
-                  <PlatformIcon className="h-5 w-5 text-primary" />
+                  <FileText className="h-5 w-5 text-primary" />
                 </AvatarFallback>
               </Avatar>
               
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground mb-2 line-clamp-2">
-                  {post.content}
-                </p>
+                <h3 className="text-sm font-medium text-foreground mb-1 line-clamp-1">
+                  {post.title}
+                </h3>
+                {post.content && (
+                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                    {post.content}
+                  </p>
+                )}
                 
                 <div className="flex items-center space-x-3 text-xs text-muted-foreground">
                   <Badge 
                     variant="secondary" 
-                    className={`${statusConfig[post.status as keyof typeof statusConfig].color} text-white`}
+                    className="bg-success text-white"
                   >
-                    <StatusIcon className="h-3 w-3 mr-1" />
-                    {statusConfig[post.status as keyof typeof statusConfig].label}
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Đã tạo
                   </Badge>
                   
-                  <span>{post.scheduledTime}</span>
-                  <span>•</span>
-                  <span>{post.engagement}</span>
+                  <span>
+                    {formatDistanceToNow(new Date(post.created_at), { 
+                      addSuffix: true, 
+                      locale: vi 
+                    })}
+                  </span>
                 </div>
               </div>
               
@@ -101,12 +110,31 @@ export function RecentPosts() {
                   <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
                   <DropdownMenuItem>Sao chép</DropdownMenuItem>
                   <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">Xóa</DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="text-destructive"
+                    onClick={() => handleDeletePost(post.id)}
+                    disabled={deletePost.isPending}
+                  >
+                    {deletePost.isPending ? (
+                      <>
+                        <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                        Đang xóa...
+                      </>
+                    ) : (
+                      'Xóa'
+                    )}
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          );
-        })}
+          ))
+        ) : (
+          <div className="text-center py-8">
+            <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground mb-2">Chưa có bài viết nào</p>
+            <p className="text-sm text-muted-foreground">Tạo bài viết đầu tiên của bạn!</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

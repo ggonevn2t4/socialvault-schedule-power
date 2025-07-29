@@ -2,6 +2,7 @@ import { Layout } from "@/components/layout/Layout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { RecentPosts } from "@/components/dashboard/RecentPosts";
 import { QuickActions } from "@/components/dashboard/QuickActions";
+import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -74,10 +75,12 @@ const Index = () => {
                 Tăng trưởng thông minh và hiệu quả hơn với SocialVault.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 animate-scale-in">
-                <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-semibold">
-                  <PenTool className="mr-2 h-5 w-5" />
-                  Tạo bài viết mới
-                </Button>
+                <CreatePostDialog>
+                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-semibold">
+                    <PenTool className="mr-2 h-5 w-5" />
+                    Tạo bài viết mới
+                  </Button>
+                </CreatePostDialog>
                 <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
                   <BarChart3 className="mr-2 h-5 w-5" />
                   Xem phân tích
