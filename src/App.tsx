@@ -14,6 +14,7 @@ import TeamDashboard from "./pages/TeamDashboard";
 import ConnectedAccounts from "./pages/ConnectedAccounts";
 import Integrations from "./pages/Integrations";
 import Profile from "./pages/Profile";
+import Create from "./pages/Create";
 import BrandGuidelines from "./pages/BrandGuidelines";
 import CompetitiveIntelligence from "./pages/CompetitiveIntelligence";
 import Auth from "./pages/Auth";
@@ -75,6 +76,11 @@ const App = () => (
               <Route path="/brand-guidelines" element={
                 <ProtectedRoute>
                   <BrandGuidelines />
+                </ProtectedRoute>
+              } />
+              <Route path="/create" element={
+                <ProtectedRoute>
+                  <Create />
                 </ProtectedRoute>
               } />
               <Route path="/competitive-intelligence" element={
