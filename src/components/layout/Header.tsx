@@ -42,7 +42,7 @@ export function Header() {
         {/* Center - Search */}
         <div className="flex-1 max-w-lg mx-8">
           <AdvancedSearch 
-            placeholder="Tìm kiếm bài viết, lịch trình... (⌘K)"
+            placeholder="Search posts, schedules... (⌘K)"
             className="w-full"
           />
         </div>
@@ -51,7 +51,7 @@ export function Header() {
         <div className="flex items-center space-x-3">
           <CreatePostDialog>
             <Button className="btn-premium h-9 font-medium">
-              + Tạo bài viết
+              + Create Post
             </Button>
           </CreatePostDialog>
 
@@ -74,7 +74,7 @@ export function Header() {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-2">
                   <p className="text-sm font-medium leading-none">
-                    {user?.user_metadata?.display_name || 'Người dùng'}
+                    {user?.user_metadata?.display_name || 'User'}
                   </p>
                   <p className="text-xs leading-none text-muted-foreground">
                     {user?.email}
@@ -84,15 +84,15 @@ export function Header() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
-                <span>Hồ sơ cá nhân</span>
+                <span>Profile</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Settings className="mr-2 h-4 w-4" />
-                <span>Cài đặt</span>
+                <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 💳
-                <span className="ml-2">Thanh toán</span>
+                <span className="ml-2">Billing</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem 
@@ -100,7 +100,7 @@ export function Header() {
                 onClick={handleSignOut}
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Đăng xuất
+                Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

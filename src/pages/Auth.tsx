@@ -41,8 +41,8 @@ export default function Auth() {
     e.preventDefault();
     if (!email || !password) {
       toast({
-        title: "Lỗi",
-        description: "Vui lòng nhập đầy đủ email và mật khẩu.",
+        title: "Error",
+        description: "Please enter both email and password.",
         variant: "destructive",
       });
       return;
@@ -70,24 +70,24 @@ export default function Auth() {
 
       if (data.user) {
         toast({
-          title: "Đăng nhập thành công!",
-          description: "Chào mừng bạn trở lại SocialVault.",
+          title: "Sign in successful!",
+          description: "Welcome back to Social Media Manager.",
         });
         // Force page reload for clean state
         window.location.href = '/';
       }
     } catch (error: any) {
       console.error('Sign in error:', error);
-      let errorMessage = "Có lỗi xảy ra trong quá trình đăng nhập.";
+      let errorMessage = "An error occurred during sign in.";
       
       if (error.message.includes('Invalid login credentials')) {
-        errorMessage = "Email hoặc mật khẩu không chính xác.";
+        errorMessage = "Invalid email or password.";
       } else if (error.message.includes('Email not confirmed')) {
-        errorMessage = "Vui lòng xác nhận email trước khi đăng nhập.";
+        errorMessage = "Please confirm your email before signing in.";
       }
       
       toast({
-        title: "Lỗi đăng nhập",
+        title: "Sign in error",
         description: errorMessage,
         variant: "destructive",
       });
@@ -100,8 +100,8 @@ export default function Auth() {
     e.preventDefault();
     if (!email || !password || !displayName) {
       toast({
-        title: "Lỗi",
-        description: "Vui lòng điền đầy đủ thông tin.",
+        title: "Error",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       });
       return;
@@ -109,8 +109,8 @@ export default function Auth() {
 
     if (password.length < 6) {
       toast({
-        title: "Lỗi",
-        description: "Mật khẩu phải có ít nhất 6 ký tự.",
+        title: "Error",
+        description: "Password must be at least 6 characters long.",
         variant: "destructive",
       });
       return;
@@ -131,6 +131,7 @@ export default function Auth() {
           emailRedirectTo: redirectUrl,
           data: {
             display_name: displayName,
+            username: email.split('@')[0], // Generate username from email
           }
         }
       });
@@ -139,8 +140,8 @@ export default function Auth() {
 
       if (data.user) {
         toast({
-          title: "Đăng ký thành công!",
-          description: "Chúng tôi đã gửi email xác nhận. Vui lòng kiểm tra hộp thư của bạn.",
+          title: "Sign up successful!",
+          description: "We've sent you a confirmation email. Please check your inbox.",
         });
         
         // If user is immediately confirmed, redirect
@@ -150,16 +151,16 @@ export default function Auth() {
       }
     } catch (error: any) {
       console.error('Sign up error:', error);
-      let errorMessage = "Có lỗi xảy ra trong quá trình đăng ký.";
+      let errorMessage = "An error occurred during sign up.";
       
       if (error.message.includes('User already registered')) {
-        errorMessage = "Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác.";
+        errorMessage = "This email is already registered. Please sign in or use a different email.";
       } else if (error.message.includes('Password should be')) {
-        errorMessage = "Mật khẩu không đủ mạnh. Vui lòng sử dụng mật khẩu khác.";
+        errorMessage = "Password is not strong enough. Please use a different password.";
       }
       
       toast({
-        title: "Lỗi đăng ký",
+        title: "Sign up error",
         description: errorMessage,
         variant: "destructive",
       });
@@ -184,18 +185,18 @@ export default function Auth() {
               </div>
             </div>
             <CardTitle className="text-2xl font-bold">
-              Chào mừng đến với SocialVault
+              Welcome to Social Media Manager
             </CardTitle>
             <CardDescription>
-              Quản lý mạng xã hội thông minh và hiệu quả
+              Intelligent and efficient social media management
             </CardDescription>
           </CardHeader>
           
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Đăng nhập</TabsTrigger>
-                <TabsTrigger value="signup">Đăng ký</TabsTrigger>
+                <TabsTrigger value="signin">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin" className="space-y-4 mt-6">
@@ -213,7 +214,7 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Mật khẩu</Label>
+                    <Label htmlFor="signin-password">Password</Label>
                     <Input
                       id="signin-password"
                       type="password"
@@ -229,13 +230,13 @@ export default function Auth() {
                     className="w-full btn-premium" 
                     disabled={loading}
                   >
-                    {loading ? (
+                     {loading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Đang đăng nhập...
+                        Signing in...
                       </>
                     ) : (
-                      'Đăng nhập'
+                      'Sign In'
                     )}
                   </Button>
                 </form>
@@ -244,11 +245,11 @@ export default function Auth() {
               <TabsContent value="signup" className="space-y-4 mt-6">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Tên hiển thị</Label>
+                    <Label htmlFor="signup-name">Display Name</Label>
                     <Input
                       id="signup-name"
                       type="text"
-                      placeholder="Nguyễn Văn A"
+                      placeholder="John Smith"
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       disabled={loading}
@@ -268,7 +269,7 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Mật khẩu</Label>
+                    <Label htmlFor="signup-password">Password</Label>
                     <Input
                       id="signup-password"
                       type="password"
@@ -285,13 +286,13 @@ export default function Auth() {
                     className="w-full btn-premium" 
                     disabled={loading}
                   >
-                    {loading ? (
+                     {loading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Đang đăng ký...
+                        Creating account...
                       </>
                     ) : (
-                      'Đăng ký'
+                      'Create Account'
                     )}
                   </Button>
                 </form>
@@ -307,7 +308,7 @@ export default function Auth() {
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Quay lại trang chủ
+                Back to Home
               </Button>
             </div>
           </CardContent>
