@@ -35,20 +35,14 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useCreatePost } from '@/hooks/usePosts';
 import { useToast } from '@/hooks/use-toast';
+import { PostData, Platform } from '@/types/post';
+import { PreviewContainer } from './preview/PreviewContainer';
 
 interface CreatePostModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-interface Platform {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-  limit: number;
-  enabled: boolean;
-}
 
 const defaultPlatforms: Platform[] = [
   { id: 'twitter', name: 'Twitter', icon: '🐦', color: '#1DA1F2', limit: 280, enabled: false },
@@ -511,45 +505,16 @@ export function CreatePostModal({ open, onOpenChange }: CreatePostModalProps) {
 
           {/* Preview Column */}
           <div className="w-2/5 p-6 bg-muted/30">
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <Eye className="h-5 w-5" />
-                <h3 className="font-semibold">Preview</h3>
-              </div>
-              
-              <ScrollArea className="h-[600px]">
-                <div className="space-y-4">
-                  {activePlatforms.length === 0 ? (
-                    <div className="text-center py-12 text-muted-foreground">
-                      <Eye className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                      <p className="text-sm">Select platforms to see preview</p>
-                    </div>
-                  ) : (
-                    activePlatforms.map(platform => (
-                      <div key={platform.id} className="border rounded-lg p-4 bg-background">
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="text-lg">{platform.icon}</span>
-                          <span className="font-medium">{platform.name}</span>
-                          <Badge 
-                            variant="outline" 
-                            className="ml-auto text-xs"
-                            style={{ borderColor: platform.color }}
-                          >
-                            {charCount}/{platform.limit}
-                          </Badge>
-                        </div>
-                        <div className="space-y-2">
-                          {title && <h4 className="font-medium">{title}</h4>}
-                          <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                            {content || "Your post content will appear here..."}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </ScrollArea>
-            </div>
+            <PreviewContainer 
+              postData={{
+                title,
+                content,
+                platforms: activePlatforms.map(p => p.id),
+                scheduledDate,
+                scheduledTime
+              }}
+              platforms={platforms}
+            />
           </div>
         </div>
 
