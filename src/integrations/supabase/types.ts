@@ -282,6 +282,99 @@ export type Database = {
         }
         Relationships: []
       }
+      user_preferences: {
+        Row: {
+          analytics_tracking: boolean | null
+          created_at: string
+          data_sharing: boolean | null
+          date_format: string | null
+          email_notifications: boolean | null
+          id: string
+          in_app_notifications: boolean | null
+          language: string | null
+          marketing_emails: boolean | null
+          profile_visibility: string | null
+          push_notifications: boolean | null
+          security_alerts: boolean | null
+          theme: string | null
+          time_format: string | null
+          timezone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analytics_tracking?: boolean | null
+          created_at?: string
+          data_sharing?: boolean | null
+          date_format?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          in_app_notifications?: boolean | null
+          language?: string | null
+          marketing_emails?: boolean | null
+          profile_visibility?: string | null
+          push_notifications?: boolean | null
+          security_alerts?: boolean | null
+          theme?: string | null
+          time_format?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analytics_tracking?: boolean | null
+          created_at?: string
+          data_sharing?: boolean | null
+          date_format?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          in_app_notifications?: boolean | null
+          language?: string | null
+          marketing_emails?: boolean | null
+          profile_visibility?: string | null
+          push_notifications?: boolean | null
+          security_alerts?: boolean | null
+          theme?: string | null
+          time_format?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_sessions: {
+        Row: {
+          created_at: string
+          device_info: Json | null
+          id: string
+          ip_address: unknown | null
+          last_active: string | null
+          location: string | null
+          session_token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_info?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          last_active?: string | null
+          location?: string | null
+          session_token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_info?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          last_active?: string | null
+          location?: string | null
+          session_token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       workflow_approvals: {
         Row: {
           approved_at: string | null
