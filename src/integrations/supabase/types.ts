@@ -160,6 +160,214 @@ export type Database = {
         }
         Relationships: []
       }
+      competitive_reports: {
+        Row: {
+          charts_data: Json | null
+          competitors: string[] | null
+          created_at: string
+          created_by: string
+          id: string
+          insights: Json | null
+          is_shared: boolean | null
+          metrics: Json | null
+          report_name: string
+          report_type: string
+          team_id: string
+          time_period: Json
+          updated_at: string
+        }
+        Insert: {
+          charts_data?: Json | null
+          competitors?: string[] | null
+          created_at?: string
+          created_by: string
+          id?: string
+          insights?: Json | null
+          is_shared?: boolean | null
+          metrics?: Json | null
+          report_name: string
+          report_type: string
+          team_id: string
+          time_period: Json
+          updated_at?: string
+        }
+        Update: {
+          charts_data?: Json | null
+          competitors?: string[] | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          insights?: Json | null
+          is_shared?: boolean | null
+          metrics?: Json | null
+          report_name?: string
+          report_type?: string
+          team_id?: string
+          time_period?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      competitor_content: {
+        Row: {
+          collected_at: string
+          content_text: string | null
+          content_type: string
+          engagement_metrics: Json | null
+          hashtags: string[] | null
+          id: string
+          media_urls: string[] | null
+          mentions: string[] | null
+          monitoring_id: string
+          platform: string
+          post_url: string | null
+          published_at: string | null
+          sentiment_score: number | null
+          team_id: string
+        }
+        Insert: {
+          collected_at?: string
+          content_text?: string | null
+          content_type: string
+          engagement_metrics?: Json | null
+          hashtags?: string[] | null
+          id?: string
+          media_urls?: string[] | null
+          mentions?: string[] | null
+          monitoring_id: string
+          platform: string
+          post_url?: string | null
+          published_at?: string | null
+          sentiment_score?: number | null
+          team_id: string
+        }
+        Update: {
+          collected_at?: string
+          content_text?: string | null
+          content_type?: string
+          engagement_metrics?: Json | null
+          hashtags?: string[] | null
+          id?: string
+          media_urls?: string[] | null
+          mentions?: string[] | null
+          monitoring_id?: string
+          platform?: string
+          post_url?: string | null
+          published_at?: string | null
+          sentiment_score?: number | null
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitor_content_monitoring_id_fkey"
+            columns: ["monitoring_id"]
+            isOneToOne: false
+            referencedRelation: "competitor_monitoring"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitor_monitoring: {
+        Row: {
+          account_handle: string
+          competitor_id: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          last_checked: string | null
+          monitoring_frequency: string | null
+          platform: string
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          account_handle: string
+          competitor_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          last_checked?: string | null
+          monitoring_frequency?: string | null
+          platform: string
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          account_handle?: string
+          competitor_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          last_checked?: string | null
+          monitoring_frequency?: string | null
+          platform?: string
+          team_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitor_monitoring_competitor_id_fkey"
+            columns: ["competitor_id"]
+            isOneToOne: false
+            referencedRelation: "competitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitors: {
+        Row: {
+          company_size: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          industry: string | null
+          is_active: boolean | null
+          location: string | null
+          logo_url: string | null
+          name: string
+          social_handles: Json | null
+          tags: string[] | null
+          team_id: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          company_size?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          industry?: string | null
+          is_active?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          name: string
+          social_handles?: Json | null
+          tags?: string[] | null
+          team_id: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          company_size?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          industry?: string | null
+          is_active?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          name?: string
+          social_handles?: Json | null
+          tags?: string[] | null
+          team_id?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       content_templates: {
         Row: {
           content_template: string
@@ -202,6 +410,57 @@ export type Database = {
           template_type?: string
           updated_at?: string
           usage_count?: number | null
+        }
+        Relationships: []
+      }
+      market_insights: {
+        Row: {
+          category: string
+          confidence_score: number | null
+          created_at: string
+          created_by: string
+          data_points: Json | null
+          description: string | null
+          id: string
+          impact_level: string | null
+          insight_type: string
+          is_archived: boolean | null
+          sources: string[] | null
+          team_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          confidence_score?: number | null
+          created_at?: string
+          created_by: string
+          data_points?: Json | null
+          description?: string | null
+          id?: string
+          impact_level?: string | null
+          insight_type: string
+          is_archived?: boolean | null
+          sources?: string[] | null
+          team_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          confidence_score?: number | null
+          created_at?: string
+          created_by?: string
+          data_points?: Json | null
+          description?: string | null
+          id?: string
+          impact_level?: string | null
+          insight_type?: string
+          is_archived?: boolean | null
+          sources?: string[] | null
+          team_id?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }

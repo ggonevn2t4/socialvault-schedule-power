@@ -58,7 +58,7 @@ const navigationSections = [
     label: "CÔNG CỤ",
     items: [
       { title: "Thư viện nội dung", url: "/content-library", icon: FolderOpen, badge: null },
-      { title: "Phân tích đối thủ", url: "/competitors", icon: Users, badge: 2 },
+      { title: "Phân tích đối thủ", url: "/competitive-intelligence", icon: Users, badge: 2 },
       { title: "RSS Feeds", url: "/rss-feeds", icon: Rss, badge: null },
     ]
   },
