@@ -127,7 +127,7 @@ export default function TeamDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Task Overview */}
-              <TaskOverview />
+              <TaskOverview teamId="demo-team-id" />
               
               {/* Quick Team Chat */}
               <QuickTeamChat />

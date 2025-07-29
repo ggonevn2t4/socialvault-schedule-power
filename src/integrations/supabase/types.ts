@@ -166,6 +166,54 @@ export type Database = {
           },
         ]
       }
+      tasks: {
+        Row: {
+          assignee_id: string | null
+          completed_at: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          due_date: string | null
+          id: string
+          priority: string
+          progress: number | null
+          status: string
+          team_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string
+          progress?: number | null
+          status?: string
+          team_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string
+          progress?: number | null
+          status?: string
+          team_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       team_members: {
         Row: {
           id: string
@@ -230,6 +278,137 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      workflow_approvals: {
+        Row: {
+          approved_at: string | null
+          approver_id: string
+          comments: string | null
+          created_at: string
+          id: string
+          status: string
+          step_index: number
+          workflow_instance_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approver_id: string
+          comments?: string | null
+          created_at?: string
+          id?: string
+          status?: string
+          step_index: number
+          workflow_instance_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approver_id?: string
+          comments?: string | null
+          created_at?: string
+          id?: string
+          status?: string
+          step_index?: number
+          workflow_instance_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_approvals_workflow_instance_id_fkey"
+            columns: ["workflow_instance_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_instances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_instances: {
+        Row: {
+          created_at: string
+          created_by: string
+          current_step: number | null
+          data: Json | null
+          id: string
+          status: string
+          task_id: string | null
+          team_id: string
+          updated_at: string
+          workflow_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          current_step?: number | null
+          data?: Json | null
+          id?: string
+          status?: string
+          task_id?: string | null
+          team_id: string
+          updated_at?: string
+          workflow_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          current_step?: number | null
+          data?: Json | null
+          id?: string
+          status?: string
+          task_id?: string | null
+          team_id?: string
+          updated_at?: string
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_instances_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_instances_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflows: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          steps: Json
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          steps?: Json
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          steps?: Json
+          team_id?: string
           updated_at?: string
         }
         Relationships: []

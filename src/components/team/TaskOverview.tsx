@@ -10,61 +10,17 @@ import {
   CheckCircle,
   Plus
 } from 'lucide-react';
-import { format, formatDistanceToNow } from 'date-fns';
+import { useTasks, Task } from '@/hooks/useTasks';
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
-// Mock task data
-const mockTasks = [
-  {
-    id: '1',
-    title: 'Summer Campaign Content Review',
-    assignee: 'Sarah Johnson',
-    dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
-    priority: 'high',
-    status: 'in_progress',
-    progress: 75,
-    type: 'review'
-  },
-  {
-    id: '2',
-    title: 'Q1 Analytics Report',
-    assignee: 'James Rodriguez',
-    dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now
-    priority: 'medium',
-    status: 'pending',
-    progress: 30,
-    type: 'analysis'
-  },
-  {
-    id: '3',
-    title: 'Product Demo Video Edit',
-    assignee: 'Michael Chen',
-    dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), // 1 day from now
-    priority: 'high',
-    status: 'review',
-    progress: 90,
-    type: 'content'
-  },
-  {
-    id: '4',
-    title: 'Brand Guidelines Update',
-    assignee: 'Emma Wilson',
-    dueDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day overdue
-    priority: 'medium',
-    status: 'overdue',
-    progress: 100,
-    type: 'documentation'
-  },
-  {
-    id: '5',
-    title: 'Social Media Calendar',
-    assignee: 'Sarah Johnson',
-    dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-    priority: 'low',
-    status: 'pending',
-    progress: 10,
-    type: 'planning'
-  }
-];
+interface TaskOverviewProps {
+  teamId?: string;
+}
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
@@ -96,12 +52,46 @@ const getStatusIcon = (status: string) => {
   }
 };
 
-export function TaskOverview() {
-  const overdueTasks = mockTasks.filter(task => task.status === 'overdue').length;
-  const dueSoon = mockTasks.filter(task => {
-    const daysUntilDue = (task.dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+export function TaskOverview({ teamId }: TaskOverviewProps) {
+  const { tasks, createTask, updateTaskProgress, isLoading } = useTasks(teamId);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [newTask, setNewTask] = useState<{
+    title: string;
+    description: string;
+    priority: 'low' | 'medium' | 'high';
+    due_date: string;
+  }>({
+    title: '',
+    description: '',
+    priority: 'medium',
+    due_date: '',
+  });
+
+  const overdueTasks = tasks.filter(task => task.status === 'overdue').length;
+  const dueSoon = tasks.filter(task => {
+    if (!task.due_date) return false;
+    const daysUntilDue = (new Date(task.due_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
     return daysUntilDue <= 2 && daysUntilDue > 0;
   }).length;
+
+  const handleCreateTask = async () => {
+    if (!teamId || !newTask.title.trim()) return;
+
+    const success = await createTask({
+      ...newTask,
+      team_id: teamId,
+      due_date: newTask.due_date || undefined,
+    });
+
+    if (success) {
+      setNewTask({ title: '', description: '', priority: 'medium', due_date: '' });
+      setShowCreateDialog(false);
+    }
+  };
+
+  const handleProgressUpdate = async (taskId: string, progress: number) => {
+    await updateTaskProgress(taskId, progress);
+  };
 
   return (
     <Card className="card-premium">
@@ -121,17 +111,90 @@ export function TaskOverview() {
             )}
           </div>
         </div>
-        <Button size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Task
-        </Button>
+        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+          <DialogTrigger asChild>
+            <Button size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Task
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Task</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  value={newTask.title}
+                  onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Enter task title"
+                />
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={newTask.description}
+                  onChange={(e) => setNewTask(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Enter task description (optional)"
+                />
+              </div>
+              <div>
+                <Label htmlFor="priority">Priority</Label>
+                <Select value={newTask.priority} onValueChange={(value: 'low' | 'medium' | 'high') => 
+                  setNewTask(prev => ({ ...prev, priority: value }))
+                }>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="due_date">Due Date</Label>
+                <Input
+                  id="due_date"
+                  type="datetime-local"
+                  value={newTask.due_date}
+                  onChange={(e) => setNewTask(prev => ({ ...prev, due_date: e.target.value }))}
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleCreateTask} disabled={!newTask.title.trim()}>
+                  Create Task
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {mockTasks.slice(0, 5).map((task) => {
-            const StatusIcon = getStatusIcon(task.status);
-            const isOverdue = task.status === 'overdue';
-            const daysToDue = Math.ceil((task.dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        {isLoading ? (
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="p-4 border rounded-lg animate-pulse">
+                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-muted rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {tasks.slice(0, 5).map((task) => {
+              const StatusIcon = getStatusIcon(task.status);
+              const isOverdue = task.status === 'overdue';
+              const daysToDue = task.due_date ? 
+                Math.ceil((new Date(task.due_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : 
+                null;
             
             return (
               <div
@@ -143,9 +206,11 @@ export function TaskOverview() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-start gap-3">
                     <StatusIcon className={`h-5 w-5 mt-0.5 ${getStatusColor(task.status)}`} />
-                    <div>
+                    <div className="flex-1">
                       <h4 className="font-medium text-foreground">{task.title}</h4>
-                      <p className="text-sm text-muted-foreground">{task.assignee}</p>
+                      {task.description && (
+                        <p className="text-sm text-muted-foreground mt-1">{task.description}</p>
+                      )}
                     </div>
                   </div>
                   
@@ -154,37 +219,55 @@ export function TaskOverview() {
                   </Badge>
                 </div>
                 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Progress</span>
-                    <span className="font-medium">{task.progress}%</span>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Progress</span>
+                      <span className="font-medium">{task.progress}%</span>
+                    </div>
+                    <Progress 
+                      value={task.progress} 
+                      className="h-2 cursor-pointer" 
+                      onClick={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const clickX = e.clientX - rect.left;
+                        const newProgress = Math.round((clickX / rect.width) * 100);
+                        handleProgressUpdate(task.id, Math.max(0, Math.min(100, newProgress)));
+                      }}
+                    />
                   </div>
-                  <Progress value={task.progress} className="h-2" />
-                </div>
                 
-                <div className="flex items-center justify-between mt-3 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className={isOverdue ? 'text-destructive font-medium' : 'text-muted-foreground'}>
-                      {isOverdue 
-                        ? `${Math.abs(daysToDue)} days overdue`
-                        : daysToDue === 0 
-                        ? 'Due today'
-                        : daysToDue === 1 
-                        ? 'Due tomorrow'
-                        : `Due in ${daysToDue} days`
-                      }
-                    </span>
+                  <div className="flex items-center justify-between mt-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span className={isOverdue ? 'text-destructive font-medium' : 'text-muted-foreground'}>
+                        {task.due_date ? (
+                          isOverdue 
+                            ? `${Math.abs(daysToDue!)} days overdue`
+                            : daysToDue === 0 
+                            ? 'Due today'
+                            : daysToDue === 1 
+                            ? 'Due tomorrow'
+                            : `Due in ${daysToDue} days`
+                        ) : (
+                          'No due date'
+                        )}
+                      </span>
+                    </div>
+                    
+                    <Badge variant="outline" className="text-xs capitalize">
+                      {task.status.replace('_', ' ')}
+                    </Badge>
                   </div>
-                  
-                  <Badge variant="outline" className="text-xs capitalize">
-                    {task.status.replace('_', ' ')}
-                  </Badge>
-                </div>
               </div>
-            );
-          })}
-        </div>
+              );
+            })}
+            {tasks.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No tasks found. Create your first task to get started!</p>
+              </div>
+            )}
+          </div>
+        )}
         
         <div className="mt-4 pt-4 border-t">
           <Button variant="outline" className="w-full">
