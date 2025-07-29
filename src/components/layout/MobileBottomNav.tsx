@@ -1,83 +1,95 @@
-import { NavLink, useLocation } from "react-router-dom";
-import { Home, Calendar, FileText, BarChart3, MoreHorizontal } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Home, Calendar, Plus, BarChart3, Users } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
-const bottomNavItems = [
-  { 
-    title: "Trang chủ", 
-    url: "/", 
-    icon: Home, 
-    badge: null 
-  },
-  { 
-    title: "Lịch trình", 
-    url: "/calendar", 
-    icon: Calendar, 
-    badge: null 
-  },
-  { 
-    title: "Bài viết", 
-    url: "/posts", 
-    icon: FileText, 
-    badge: 3 
-  },
-  { 
-    title: "Phân tích", 
-    url: "/analytics", 
-    icon: BarChart3, 
-    badge: null 
-  },
-  { 
-    title: "Thêm", 
-    url: "/more", 
-    icon: MoreHorizontal, 
-    badge: null 
-  },
+const navItems = [
+  { icon: Home, label: 'Home', path: '/' },
+  { icon: Calendar, label: 'Schedule', path: '/calendar' },
+  { icon: Plus, label: 'Create', path: '/create', isAction: true },
+  { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+  { icon: Users, label: 'Team', path: '/team' },
 ];
 
 export function MobileBottomNav() {
   const location = useLocation();
-  const currentPath = location.pathname;
+  const [createPressed, setCreatePressed] = useState(false);
+
+  const handleCreatePress = () => {
+    setCreatePressed(true);
+    // Add haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+    setTimeout(() => setCreatePressed(false), 150);
+  };
 
   const isActive = (path: string) => {
-    if (path === "/more") {
-      // More tab is active for any route not in the main bottom nav
-      return !bottomNavItems.slice(0, 4).some(item => currentPath === item.url);
-    }
-    return currentPath === path;
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border/50 safe-area-pb lg:hidden">
-      <div className="flex items-center justify-around px-2 py-2">
-        {bottomNavItems.map((item) => {
-          const active = isActive(item.url);
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+      {/* Background with blur effect */}
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-lg border-t border-border/50" />
+      
+      {/* Navigation items */}
+      <div className="relative flex items-center justify-around h-16 px-2 safe-area-bottom">
+        {navItems.map((item) => {
           const Icon = item.icon;
+          const active = isActive(item.path);
           
+          if (item.isAction) {
+            return (
+              <Button
+                key={item.path}
+                size="lg"
+                className={cn(
+                  "h-12 w-12 rounded-full bg-primary hover:bg-primary/90 transition-all duration-200",
+                  createPressed && "scale-95"
+                )}
+                onTouchStart={handleCreatePress}
+                asChild
+              >
+                <NavLink to={item.path}>
+                  <Icon className="h-6 w-6 text-primary-foreground" />
+                </NavLink>
+              </Button>
+            );
+          }
+
           return (
             <NavLink
-              key={item.title}
-              to={item.url}
-              className={`flex flex-col items-center justify-center min-h-[44px] px-3 py-2 rounded-lg transition-all duration-200 relative ${
+              key={item.path}
+              to={item.path}
+              className={cn(
+                "flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-3 py-2 transition-all duration-200",
+                "touch-manipulation select-none",
                 active 
-                  ? "text-primary bg-primary/10" 
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-              }`}
+                  ? "text-primary" 
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              <div className="relative">
-                <Icon className="h-5 w-5 mb-1" />
-                {item.badge && (
-                  <Badge 
-                    variant="secondary" 
-                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground border-0 text-[10px] h-4 min-w-4 flex items-center justify-center p-0"
-                  >
-                    {item.badge}
-                  </Badge>
-                )}
+              <div className={cn(
+                "p-2 rounded-lg transition-all duration-200",
+                active && "bg-primary/10"
+              )}>
+                <Icon className={cn(
+                  "h-5 w-5 transition-all duration-200",
+                  active && "scale-110"
+                )} />
               </div>
-              <span className="text-[10px] font-medium leading-none">
-                {item.title}
+              <span className={cn(
+                "text-xs font-medium mt-1 transition-all duration-200",
+                active && "text-primary"
+              )}>
+                {item.label}
               </span>
+              {active && (
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-primary rounded-full" />
+              )}
             </NavLink>
           );
         })}

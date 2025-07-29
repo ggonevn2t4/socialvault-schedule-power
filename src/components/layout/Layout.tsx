@@ -3,12 +3,28 @@ import { AppSidebar } from "./AppSidebar";
 import { Header } from "./Header";
 import { MobileHeader } from "./MobileHeader";
 import { MobileBottomNav } from "./MobileBottomNav";
+import { FloatingActionButton } from "@/components/mobile/FloatingActionButton";
+import { useMobile } from "@/hooks/use-mobile";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
+  const { isMobile } = useMobile();
+
+  if (isMobile) {
+    return (
+      <div className="min-h-screen bg-background">
+        <MobileHeader />
+        <main className="pt-14 pb-20 px-4">
+          {children}
+        </main>
+        <MobileBottomNav />
+        <FloatingActionButton />
+      </div>
+    );
+  }
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
