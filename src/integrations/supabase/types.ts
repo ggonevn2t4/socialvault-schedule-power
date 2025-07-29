@@ -413,6 +413,51 @@ export type Database = {
         }
         Relationships: []
       }
+      login_attempts: {
+        Row: {
+          attempted_at: string | null
+          created_at: string | null
+          email: string
+          failure_reason: string | null
+          id: string
+          ip_address: unknown | null
+          is_suspicious: boolean | null
+          location_city: string | null
+          location_country: string | null
+          status: Database["public"]["Enums"]["login_status"]
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          attempted_at?: string | null
+          created_at?: string | null
+          email: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_suspicious?: boolean | null
+          location_city?: string | null
+          location_country?: string | null
+          status: Database["public"]["Enums"]["login_status"]
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          attempted_at?: string | null
+          created_at?: string | null
+          email?: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_suspicious?: boolean | null
+          location_city?: string | null
+          location_country?: string | null
+          status?: Database["public"]["Enums"]["login_status"]
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       market_insights: {
         Row: {
           category: string
@@ -461,6 +506,27 @@ export type Database = {
           team_id?: string
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      password_history: {
+        Row: {
+          created_at: string | null
+          id: string
+          password_hash: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          password_hash: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          password_hash?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -580,6 +646,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      security_audit_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          resource_id: string | null
+          resource_type: string | null
+          risk_level: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string | null
+          risk_level?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string | null
+          risk_level?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       subscribers: {
         Row: {
@@ -733,6 +838,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_mfa_settings: {
+        Row: {
+          backup_codes: string[] | null
+          created_at: string | null
+          id: string
+          is_enabled: boolean | null
+          last_used_at: string | null
+          recovery_codes_used: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          backup_codes?: string[] | null
+          created_at?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_used_at?: string | null
+          recovery_codes_used?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          backup_codes?: string[] | null
+          created_at?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_used_at?: string | null
+          recovery_codes_used?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_preferences: {
         Row: {
           analytics_tracking: boolean | null
@@ -793,6 +931,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_sessions: {
         Row: {
           created_at: string
@@ -822,6 +996,57 @@ export type Database = {
           last_active?: string | null
           location?: string | null
           session_token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_sessions_enhanced: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          id: string
+          ip_address: unknown | null
+          is_current: boolean | null
+          last_activity: string | null
+          location_city: string | null
+          location_country: string | null
+          session_token: string
+          status: Database["public"]["Enums"]["session_status"] | null
+          terminated_at: string | null
+          terminated_reason: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          ip_address?: unknown | null
+          is_current?: boolean | null
+          last_activity?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          session_token: string
+          status?: Database["public"]["Enums"]["session_status"] | null
+          terminated_at?: string | null
+          terminated_reason?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: unknown | null
+          is_current?: boolean | null
+          last_activity?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          session_token?: string
+          status?: Database["public"]["Enums"]["session_status"] | null
+          terminated_at?: string | null
+          terminated_reason?: string | null
+          user_agent?: string | null
           user_id?: string
         }
         Relationships: []
@@ -962,17 +1187,45 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_password_strength: {
+        Args: { password: string }
+        Returns: Json
+      }
       get_user_role: {
         Args: { _user_id: string; _team_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
+      is_admin: {
+        Args: { _user_id: string }
+        Returns: boolean
       }
       is_team_member: {
         Args: { _user_id: string; _team_id: string }
         Returns: boolean
       }
+      log_login_attempt: {
+        Args: {
+          p_email: string
+          p_user_id?: string
+          p_status?: Database["public"]["Enums"]["login_status"]
+          p_ip_address?: unknown
+          p_user_agent?: string
+          p_failure_reason?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "editor" | "viewer" | "content_creator" | "analyst"
+      login_status: "success" | "failed" | "blocked" | "suspicious"
+      session_status: "active" | "expired" | "terminated" | "suspicious"
       user_status: "online" | "offline" | "away" | "busy"
     }
     CompositeTypes: {
@@ -1102,6 +1355,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "editor", "viewer", "content_creator", "analyst"],
+      login_status: ["success", "failed", "blocked", "suspicious"],
+      session_status: ["active", "expired", "terminated", "suspicious"],
       user_status: ["online", "offline", "away", "busy"],
     },
   },

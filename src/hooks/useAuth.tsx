@@ -42,9 +42,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string, userData?: { username?: string; display_name?: string }) => {
     try {
+      // Check password strength before signup
+      const { data: passwordCheck } = await supabase.rpc('check_password_strength', { password });
+      
+      if (passwordCheck && typeof passwordCheck === 'object' && 'is_strong' in passwordCheck && !passwordCheck.is_strong) {
+        toast.error('Password does not meet security requirements');
+        return { error: new Error('Weak password'), passwordFeedback: passwordCheck.feedback };
+      }
+
       const redirectUrl = `${window.location.origin}/`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -54,8 +62,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) {
+        // Log failed signup attempt
+        await supabase.rpc('log_login_attempt', {
+          p_email: email,
+          p_user_id: null,
+          p_status: 'failed',
+          p_user_agent: navigator.userAgent,
+          p_failure_reason: error.message
+        });
+        
         toast.error(error.message);
         return { error };
+      }
+
+      // Log successful signup
+      if (data.user) {
+        await supabase.rpc('log_login_attempt', {
+          p_email: email,
+          p_user_id: data.user.id,
+          p_status: 'success',
+          p_user_agent: navigator.userAgent
+        });
       }
 
       toast.success('Check your email for confirmation link!');
@@ -69,14 +96,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        // Log failed login attempt
+        await supabase.rpc('log_login_attempt', {
+          p_email: email,
+          p_user_id: null,
+          p_status: 'failed',
+          p_user_agent: navigator.userAgent,
+          p_failure_reason: error.message
+        });
+        
         toast.error(error.message);
         return { error };
+      }
+
+      // Log successful login
+      if (data.user) {
+        await supabase.rpc('log_login_attempt', {
+          p_email: email,
+          p_user_id: data.user.id,
+          p_status: 'success',
+          p_user_agent: navigator.userAgent
+        });
+
+        // Create session record
+        const sessionToken = data.session?.access_token || '';
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+        
+        await supabase.from('user_sessions_enhanced').insert({
+          user_id: data.user.id,
+          session_token: sessionToken,
+          user_agent: navigator.userAgent,
+          status: 'active',
+          is_current: true,
+          expires_at: expiresAt.toISOString()
+        });
+
+        // Log security event
+        await supabase.from('security_audit_log').insert({
+          user_id: data.user.id,
+          action: 'user_signin',
+          details: { email: data.user.email },
+          risk_level: 'low',
+          user_agent: navigator.userAgent
+        });
       }
 
       toast.success('Welcome back!');
@@ -115,6 +183,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
+      // Log security event before signout
+      if (user) {
+        await supabase.from('security_audit_log').insert({
+          user_id: user.id,
+          action: 'user_signout',
+          details: { email: user.email },
+          risk_level: 'low',
+          user_agent: navigator.userAgent
+        });
+
+        // Terminate active sessions
+        await supabase
+          .from('user_sessions_enhanced')
+          .update({
+            status: 'terminated',
+            terminated_at: new Date().toISOString(),
+            terminated_reason: 'user_logout'
+          })
+          .eq('user_id', user.id)
+          .eq('status', 'active');
+      }
+
       // Clean up auth state
       localStorage.removeItem('supabase.auth.token');
       Object.keys(localStorage).forEach((key) => {

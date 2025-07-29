@@ -8,6 +8,7 @@ import { NotificationSettings } from '@/components/settings/NotificationSettings
 import { PrivacySettings } from '@/components/settings/PrivacySettings';
 import { LocaleSettings } from '@/components/settings/LocaleSettings';
 import { AccountDangerZone } from '@/components/settings/AccountDangerZone';
+import { SecurityDashboard } from '@/components/security/SecurityDashboard';
 import { useUserPreferences } from '@/hooks/useUserPreferences';
 import { User, Shield, Bell, Eye, Globe, AlertTriangle } from 'lucide-react';
 
@@ -156,7 +157,7 @@ export default function Settings() {
             </TabsContent>
 
             <TabsContent value="security" className="space-y-6">
-              <SecuritySettings />
+              <SecurityDashboard />
             </TabsContent>
 
             <TabsContent value="notifications" className="space-y-6">
