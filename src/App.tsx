@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import MorePage from "./pages/MorePage";
 import Analytics from "./pages/Analytics";
 import ContentLibrary from "./pages/ContentLibrary";
+import TeamDashboard from "./pages/TeamDashboard";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import "./App.css";
@@ -44,6 +45,11 @@ const App = () => (
               <Route path="/content-library" element={
                 <ProtectedRoute>
                   <ContentLibrary />
+                </ProtectedRoute>
+              } />
+              <Route path="/team" element={
+                <ProtectedRoute>
+                  <TeamDashboard />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
