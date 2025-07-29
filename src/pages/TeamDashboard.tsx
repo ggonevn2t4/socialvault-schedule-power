@@ -130,7 +130,7 @@ export default function TeamDashboard() {
               <TaskOverview teamId="demo-team-id" />
               
               {/* Quick Team Chat */}
-              <QuickTeamChat />
+              <QuickTeamChat teamId="demo-team-id" />
             </div>
           </TabsContent>
 

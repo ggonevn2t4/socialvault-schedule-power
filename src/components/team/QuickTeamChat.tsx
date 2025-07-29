@@ -14,6 +14,7 @@ import {
   Phone,
   Video
 } from 'lucide-react';
+import { useTeamPresence } from '@/hooks/useTeamPresence';
 import { formatDistanceToNow } from 'date-fns';
 
 // Mock chat messages
@@ -54,8 +55,13 @@ const onlineMembers = [
   { name: 'Emma Wilson', avatar: '', status: 'online' }
 ];
 
-export function QuickTeamChat() {
+interface QuickTeamChatProps {
+  teamId?: string;
+}
+
+export function QuickTeamChat({ teamId }: QuickTeamChatProps) {
   const [newMessage, setNewMessage] = useState('');
+  const { presences, onlineCount, getOnlineMembers } = useTeamPresence(teamId);
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -80,7 +86,7 @@ export function QuickTeamChat() {
             Team Chat
           </CardTitle>
           <Badge variant="outline" className="text-xs">
-            {onlineMembers.filter(m => m.status === 'online').length} online
+            {onlineCount} online
           </Badge>
         </div>
         
@@ -102,22 +108,23 @@ export function QuickTeamChat() {
         <div className="flex items-center gap-2 pb-2 border-b">
           <span className="text-sm text-muted-foreground">Online:</span>
           <div className="flex items-center gap-2">
-            {onlineMembers.slice(0, 4).map((member) => (
-              <div key={member.name} className="relative">
+            {getOnlineMembers().slice(0, 4).map((member) => (
+              <div key={member.user_id} className="relative">
                 <Avatar className="h-6 w-6">
-                  <AvatarImage src={member.avatar} alt={member.name} />
+                  <AvatarImage src={member.avatar_url} alt={member.display_name || member.username} />
                   <AvatarFallback className="text-xs">
-                    {member.name.split(' ').map(n => n[0]).join('')}
+                    {(member.display_name || member.username || 'U').split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
                 <div className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-background ${
-                  member.status === 'online' ? 'bg-success' : 'bg-warning'
+                  member.status === 'online' ? 'bg-success' : 
+                  member.status === 'away' ? 'bg-warning' : 'bg-muted'
                 }`} />
               </div>
             ))}
-            {onlineMembers.length > 4 && (
+            {getOnlineMembers().length > 4 && (
               <span className="text-xs text-muted-foreground">
-                +{onlineMembers.length - 4} more
+                +{getOnlineMembers().length - 4} more
               </span>
             )}
           </div>

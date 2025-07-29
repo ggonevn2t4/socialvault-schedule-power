@@ -139,6 +139,46 @@ export function useTasks(teamId?: string) {
 
   useEffect(() => {
     fetchTasks();
+
+    if (!teamId || !user) return;
+
+    // Set up real-time subscription for tasks
+    const channel = supabase
+      .channel('tasks_channel')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'tasks',
+          filter: `team_id=eq.${teamId}`
+        },
+        (payload) => {
+          console.log('Real-time task update:', payload);
+          
+          if (payload.eventType === 'INSERT') {
+            const newTask = payload.new as Task;
+            setTasks(prev => {
+              // Avoid duplicates
+              if (prev.find(t => t.id === newTask.id)) return prev;
+              return [newTask, ...prev];
+            });
+          } else if (payload.eventType === 'UPDATE') {
+            const updatedTask = payload.new as Task;
+            setTasks(prev => prev.map(task => 
+              task.id === updatedTask.id ? updatedTask : task
+            ));
+          } else if (payload.eventType === 'DELETE') {
+            const deletedTask = payload.old as Task;
+            setTasks(prev => prev.filter(task => task.id !== deletedTask.id));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [teamId, user]);
 
   return {

@@ -12,10 +12,7 @@ import {
 } from 'lucide-react';
 import { useTasks, Task } from '@/hooks/useTasks';
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CreateTaskModal } from './CreateTaskModal';
 import { Label } from '@/components/ui/label';
 
 interface TaskOverviewProps {
@@ -55,17 +52,6 @@ const getStatusIcon = (status: string) => {
 export function TaskOverview({ teamId }: TaskOverviewProps) {
   const { tasks, createTask, updateTaskProgress, isLoading } = useTasks(teamId);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [newTask, setNewTask] = useState<{
-    title: string;
-    description: string;
-    priority: 'low' | 'medium' | 'high';
-    due_date: string;
-  }>({
-    title: '',
-    description: '',
-    priority: 'medium',
-    due_date: '',
-  });
 
   const overdueTasks = tasks.filter(task => task.status === 'overdue').length;
   const dueSoon = tasks.filter(task => {
@@ -74,19 +60,8 @@ export function TaskOverview({ teamId }: TaskOverviewProps) {
     return daysUntilDue <= 2 && daysUntilDue > 0;
   }).length;
 
-  const handleCreateTask = async () => {
-    if (!teamId || !newTask.title.trim()) return;
-
-    const success = await createTask({
-      ...newTask,
-      team_id: teamId,
-      due_date: newTask.due_date || undefined,
-    });
-
-    if (success) {
-      setNewTask({ title: '', description: '', priority: 'medium', due_date: '' });
-      setShowCreateDialog(false);
-    }
+  const handleCreateTask = async (taskData: any) => {
+    return await createTask(taskData);
   };
 
   const handleProgressUpdate = async (taskId: string, progress: number) => {
@@ -111,71 +86,10 @@ export function TaskOverview({ teamId }: TaskOverviewProps) {
             )}
           </div>
         </div>
-        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <DialogTrigger asChild>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Task
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Task</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={newTask.title}
-                  onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="Enter task title"
-                />
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={newTask.description}
-                  onChange={(e) => setNewTask(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Enter task description (optional)"
-                />
-              </div>
-              <div>
-                <Label htmlFor="priority">Priority</Label>
-                <Select value={newTask.priority} onValueChange={(value: 'low' | 'medium' | 'high') => 
-                  setNewTask(prev => ({ ...prev, priority: value }))
-                }>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="due_date">Due Date</Label>
-                <Input
-                  id="due_date"
-                  type="datetime-local"
-                  value={newTask.due_date}
-                  onChange={(e) => setNewTask(prev => ({ ...prev, due_date: e.target.value }))}
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleCreateTask} disabled={!newTask.title.trim()}>
-                  Create Task
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button size="sm" onClick={() => setShowCreateDialog(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Task
+        </Button>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -269,11 +183,12 @@ export function TaskOverview({ teamId }: TaskOverviewProps) {
           </div>
         )}
         
-        <div className="mt-4 pt-4 border-t">
-          <Button variant="outline" className="w-full">
-            View All Tasks
-          </Button>
-        </div>
+        <CreateTaskModal 
+          open={showCreateDialog}
+          onOpenChange={setShowCreateDialog}
+          onCreateTask={handleCreateTask}
+          teamId={teamId || ''}
+        />
       </CardContent>
     </Card>
   );
