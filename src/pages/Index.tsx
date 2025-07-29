@@ -5,6 +5,7 @@ import { PerformanceOverview } from "@/components/dashboard/PerformanceOverview"
 import { QuickActionsPanel } from "@/components/dashboard/QuickActionsPanel";
 import { RecentActivityFeed } from "@/components/dashboard/RecentActivityFeed";
 import { RecentPosts } from "@/components/dashboard/RecentPosts";
+import { PostCalendar } from "@/components/calendar/PostCalendar";
 
 // Mock data for stat cards
 const statsData = [
@@ -72,6 +73,9 @@ const Index = () => {
 
         {/* Performance Overview */}
         <PerformanceOverview />
+
+        {/* Calendar Section */}
+        <PostCalendar />
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
