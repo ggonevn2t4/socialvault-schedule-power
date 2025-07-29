@@ -413,6 +413,167 @@ export type Database = {
         }
         Relationships: []
       }
+      data_anonymization_log: {
+        Row: {
+          affected_tables: string[]
+          anonymization_method: string
+          created_at: string | null
+          id: string
+          original_user_id: string
+          performed_by: string | null
+          reason: string | null
+          user_id: string | null
+        }
+        Insert: {
+          affected_tables: string[]
+          anonymization_method: string
+          created_at?: string | null
+          id?: string
+          original_user_id: string
+          performed_by?: string | null
+          reason?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          affected_tables?: string[]
+          anonymization_method?: string
+          created_at?: string | null
+          id?: string
+          original_user_id?: string
+          performed_by?: string | null
+          reason?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      data_classifications: {
+        Row: {
+          classification: Database["public"]["Enums"]["data_classification"]
+          classified_by: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          reason: string | null
+          resource_id: string
+          resource_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          classification?: Database["public"]["Enums"]["data_classification"]
+          classified_by?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          reason?: string | null
+          resource_id: string
+          resource_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          classification?: Database["public"]["Enums"]["data_classification"]
+          classified_by?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          reason?: string | null
+          resource_id?: string
+          resource_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      data_exports: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          download_count: number | null
+          expires_at: string | null
+          export_format: string | null
+          export_type: string
+          file_path: string | null
+          file_size: number | null
+          id: string
+          initiated_by: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          download_count?: number | null
+          expires_at?: string | null
+          export_format?: string | null
+          export_type: string
+          file_path?: string | null
+          file_size?: number | null
+          id?: string
+          initiated_by?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          download_count?: number | null
+          expires_at?: string | null
+          export_format?: string | null
+          export_type?: string
+          file_path?: string | null
+          file_size?: number | null
+          id?: string
+          initiated_by?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      data_retention_policies: {
+        Row: {
+          auto_delete: boolean | null
+          created_at: string | null
+          created_by: string | null
+          data_type: string
+          id: string
+          legal_hold: boolean | null
+          retention_period: unknown
+          team_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          auto_delete?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          data_type: string
+          id?: string
+          legal_hold?: boolean | null
+          retention_period: unknown
+          team_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          auto_delete?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          data_type?: string
+          id?: string
+          legal_hold?: boolean | null
+          retention_period?: unknown
+          team_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_retention_policies_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       login_attempts: {
         Row: {
           attempted_at: string | null
@@ -574,6 +735,90 @@ export type Database = {
           id?: string
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      privacy_requests: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          processed_by: string | null
+          processing_notes: string | null
+          request_type: Database["public"]["Enums"]["privacy_request_type"]
+          requested_data: Json | null
+          status: Database["public"]["Enums"]["privacy_request_status"] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          processed_by?: string | null
+          processing_notes?: string | null
+          request_type: Database["public"]["Enums"]["privacy_request_type"]
+          requested_data?: Json | null
+          status?: Database["public"]["Enums"]["privacy_request_status"] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          processed_by?: string | null
+          processing_notes?: string | null
+          request_type?: Database["public"]["Enums"]["privacy_request_type"]
+          requested_data?: Json | null
+          status?: Database["public"]["Enums"]["privacy_request_status"] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      privacy_settings: {
+        Row: {
+          allow_analytics_tracking: boolean | null
+          allow_data_processing: boolean | null
+          allow_marketing_emails: boolean | null
+          auto_delete_inactive_data: boolean | null
+          created_at: string | null
+          data_retention_preference: string | null
+          id: string
+          profile_visibility: string | null
+          show_activity_status: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          allow_analytics_tracking?: boolean | null
+          allow_data_processing?: boolean | null
+          allow_marketing_emails?: boolean | null
+          auto_delete_inactive_data?: boolean | null
+          created_at?: string | null
+          data_retention_preference?: string | null
+          id?: string
+          profile_visibility?: string | null
+          show_activity_status?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          allow_analytics_tracking?: boolean | null
+          allow_data_processing?: boolean | null
+          allow_marketing_emails?: boolean | null
+          auto_delete_inactive_data?: boolean | null
+          created_at?: string | null
+          data_retention_preference?: string | null
+          id?: string
+          profile_visibility?: string | null
+          show_activity_status?: boolean | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -835,6 +1080,51 @@ export type Database = {
           id?: string
           name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_consents: {
+        Row: {
+          consent_type: Database["public"]["Enums"]["consent_type"]
+          consent_version: string | null
+          created_at: string | null
+          given_at: string | null
+          id: string
+          ip_address: unknown | null
+          is_given: boolean | null
+          legal_basis: string | null
+          updated_at: string | null
+          user_agent: string | null
+          user_id: string
+          withdrawn_at: string | null
+        }
+        Insert: {
+          consent_type: Database["public"]["Enums"]["consent_type"]
+          consent_version?: string | null
+          created_at?: string | null
+          given_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_given?: boolean | null
+          legal_basis?: string | null
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id: string
+          withdrawn_at?: string | null
+        }
+        Update: {
+          consent_type?: Database["public"]["Enums"]["consent_type"]
+          consent_version?: string | null
+          created_at?: string | null
+          given_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_given?: boolean | null
+          legal_basis?: string | null
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string
+          withdrawn_at?: string | null
         }
         Relationships: []
       }
@@ -1187,6 +1477,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      anonymize_user_data: {
+        Args: { p_user_id: string; p_method?: string }
+        Returns: boolean
+      }
       check_password_strength: {
         Args: { password: string }
         Returns: Json
@@ -1224,7 +1518,26 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "editor" | "viewer" | "content_creator" | "analyst"
+      consent_type:
+        | "marketing"
+        | "analytics"
+        | "functional"
+        | "performance"
+        | "targeting"
+      data_classification: "public" | "internal" | "confidential" | "restricted"
       login_status: "success" | "failed" | "blocked" | "suspicious"
+      privacy_request_status:
+        | "pending"
+        | "in_progress"
+        | "completed"
+        | "rejected"
+        | "cancelled"
+      privacy_request_type:
+        | "export"
+        | "delete"
+        | "anonymize"
+        | "correction"
+        | "portability"
       session_status: "active" | "expired" | "terminated" | "suspicious"
       user_status: "online" | "offline" | "away" | "busy"
     }
@@ -1355,7 +1668,29 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "editor", "viewer", "content_creator", "analyst"],
+      consent_type: [
+        "marketing",
+        "analytics",
+        "functional",
+        "performance",
+        "targeting",
+      ],
+      data_classification: ["public", "internal", "confidential", "restricted"],
       login_status: ["success", "failed", "blocked", "suspicious"],
+      privacy_request_status: [
+        "pending",
+        "in_progress",
+        "completed",
+        "rejected",
+        "cancelled",
+      ],
+      privacy_request_type: [
+        "export",
+        "delete",
+        "anonymize",
+        "correction",
+        "portability",
+      ],
       session_status: ["active", "expired", "terminated", "suspicious"],
       user_status: ["online", "offline", "away", "busy"],
     },
