@@ -11,6 +11,9 @@ import MorePage from "./pages/MorePage";
 import Analytics from "./pages/Analytics";
 import ContentLibrary from "./pages/ContentLibrary";
 import TeamDashboard from "./pages/TeamDashboard";
+import ConnectedAccounts from "./pages/ConnectedAccounts";
+import Integrations from "./pages/Integrations";
+import Profile from "./pages/Profile";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import "./App.css";
@@ -50,6 +53,21 @@ const App = () => (
               <Route path="/team" element={
                 <ProtectedRoute>
                   <TeamDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/connected-accounts" element={
+                <ProtectedRoute>
+                  <ConnectedAccounts />
+                </ProtectedRoute>
+              } />
+              <Route path="/integrations" element={
+                <ProtectedRoute>
+                  <Integrations />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
